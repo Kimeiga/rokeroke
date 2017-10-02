@@ -9,5 +9,8 @@ EditorBuildSettings:
     path: Assets/Scenes/Multiplayer Test.unity
     guid: ad881338c66b9a74081fe7baa7d57314
   - enabled: 1
+    path: Assets/Scenes/Offline Scene.unity
+    guid: 88df55fac19cc6c47a2fd4dd816b258e
+  - enabled: 1
     path: Assets/Scenes/MP2.unity
     guid: 88bd77f051c9a114e9fc601c8258870e

@@ -59,6 +59,11 @@ public class Player : NetworkBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (Input.GetButtonDown("Suicide"))
+        {
+            TakeDamage(200, gameObject.GetComponent<Player>());
+        }
 		
 	}
 
