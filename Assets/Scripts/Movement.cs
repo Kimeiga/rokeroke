@@ -118,7 +118,6 @@ public class Movement : NetworkBehaviour
                 //aircontrol
                 rigidbody.AddForce(targetVelocity * 2.5f, ForceMode.Force);
 
-            print("air control");
         }
         else
         {

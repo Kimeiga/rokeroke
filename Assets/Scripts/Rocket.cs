@@ -20,6 +20,8 @@ public class Rocket : NetworkBehaviour {
 
     public Player owner;
 
+    public bool dummy = false;
+
     // Use this for initialization
     void Start () {
         rigid = GetComponent<Rigidbody>();
@@ -30,28 +32,30 @@ public class Rocket : NetworkBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
         if(Physics.Raycast(transform.position,transform.forward, out hit, range, rocketMask))
         {
-            var hitObj = hit.transform.gameObject;
-            var victimPlayer = hitObj.GetComponent<Player>();
-            
 
             bool hitPlayer = false;
 
-
-
-            if (victimPlayer != null)
+            if (!dummy)
             {
-                if(victimPlayer == owner)
+
+                var hitObj = hit.transform.gameObject;
+                var victimPlayer = hitObj.GetComponent<Player>();
+
+                if (victimPlayer != null)
                 {
-                    return;
+                    if (victimPlayer == owner)
+                    {
+                        return;
+                    }
+
+
+
+                    hitPlayer = true;
+                    victimPlayer.TakeDamage(damage, owner);
                 }
-
-
-
-                hitPlayer = true;
-                victimPlayer.TakeDamage(damage,owner);
             }
             
             CmdExplode(hitPlayer);
@@ -68,8 +72,7 @@ public class Rocket : NetworkBehaviour {
         Destroy(gameObject);
 
     }
-
-    [Command]
+    
     void CmdExplode(bool didHitPlayer)
     {
         GameObject explode = Instantiate(explosion, hit.point, Quaternion.Euler(hit.normal)) as GameObject;
@@ -77,7 +80,7 @@ public class Rocket : NetworkBehaviour {
         Explosion explosionScript = explode.GetComponent<Explosion>();
         explosionScript.hitPlayer = didHitPlayer;
 
-        NetworkServer.Spawn(explode);
+        //NetworkServer.Spawn(explode);
 
         Destroy(gameObject);
     }

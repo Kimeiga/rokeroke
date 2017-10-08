@@ -961,7 +961,7 @@ MonoBehaviour:
   canFire: 1
   rocketPrefab: {fileID: 1145878095255352, guid: 9df2ce7ce9565954ca8d25e20e13a7f3,
     type: 2}
-  firePosition: {fileID: 4088794989806644}
+  fireTrans: {fileID: 4088794989806644}
   maxAmmo: 200
   fireDelay: 0.1
   playerCollider: {fileID: 136315393163165978}

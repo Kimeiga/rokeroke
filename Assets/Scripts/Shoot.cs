@@ -7,7 +7,7 @@ public class Shoot : NetworkBehaviour {
 
     public bool canFire = true;
     public GameObject rocketPrefab;
-    public Transform firePosition;
+    public Transform fireTrans;
     public int maxAmmo = 10;
     private int ammo;
     public float fireDelay = 0.5f;
@@ -55,8 +55,10 @@ public class Shoot : NetworkBehaviour {
 
     public AudioClip[] clips;
 
+    public string theNetworkID;
+
     // Use this for initialization
-    void Start () {
+    void Start() {
 
         playerScript = GetComponent<Player>();
 
@@ -69,24 +71,24 @@ public class Shoot : NetworkBehaviour {
         nextFire = 0;
         kickbackAcc = 0;
 
+        theNetworkID = gameObject.GetComponent<NetworkViewID>().ToString();
+    }
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    // Update is called once per frame
+    void Update() {
 
         if (!isLocalPlayer)
         {
             return;
         }
 
-        if(Input.GetButton("Fire1") && canFire && Ammo > 0 && Time.time > nextFire)
+        if (Input.GetButton("Fire1") && canFire && Ammo > 0 && Time.time > nextFire)
         {
 
             LeanTween.cancel(gameObject);
 
-            CmdFire(firePosition.position,firePosition.rotation);
-
+            //CmdFire(firePosition.position,firePosition.rotation);
+            FireRocket();
 
             //audio.Play();
             CmdSound(0);
@@ -97,7 +99,7 @@ public class Shoot : NetworkBehaviour {
             //kickbackAcc = Mathf.Clamp(kickbackAcc, -3, 0);
 
             Ammo--;
-            
+
             nextFire = Time.time + fireDelay;
         }
 
@@ -105,7 +107,7 @@ public class Shoot : NetworkBehaviour {
         if (Input.GetButton("Fire2") && canFire && Ammo > 9 && Time.time > nextFire)
         {
 
-            CmdHitscan(firePosition.position, firePosition.forward);
+            CmdHitscan(fireTrans.position, fireTrans.forward);
 
             LeanTween.cancel(gameObject);
 
@@ -115,7 +117,7 @@ public class Shoot : NetworkBehaviour {
             CmdSound(1);
 
 
-            kickbackAcc -= kickback *2;
+            kickbackAcc -= kickback * 2;
 
             Ammo -= 10;
 
@@ -125,17 +127,68 @@ public class Shoot : NetworkBehaviour {
 
 
 
-            if (fireOneshot)
+        if (fireOneshot)
         {
-            
+
             LeanTween.value(gameObject, kickbackAcc, 0, kickTween).setEase(LeanTweenType.easeOutQuint).setOnUpdate((float val) => { kickbackAcc = val; });
 
             fireOneshot = false;
         }
-        //LeanTween.value(gameObject, kickbackAcc, 0, 1).setOnUpdate((float val) => { kickbackAcc = val; });
 
         swayScript.zOffset = kickbackAcc;
 
+    }
+
+    void FireRocket()
+    {
+        GameObject rocket = GameObject.Instantiate(rocketPrefab,
+                               fireTrans.position,
+                               fireTrans.rotation) as GameObject;
+
+        //set me as the owner of the rocket
+        Rocket rocketScript = rocket.GetComponent<Rocket>();
+        rocketScript.owner = playerScript;
+
+        //make rocket not collide with me
+        Collider rocketCol = rocket.GetComponent<Collider>();
+
+        Physics.IgnoreCollision(rocketCol, playerCollider);
+        Physics.IgnoreCollision(rocketCol, head);
+        Physics.IgnoreCollision(rocketCol, eye);
+
+        //tell the server to tell the rest of the players to make a rocket on their machines
+        //you'll need to pass the pos and rot to spawn the rocket in
+        CmdSpawnDummyRocket(fireTrans.position, fireTrans.rotation, theNetworkID);
+    }
+
+    [Command]
+    void CmdSpawnDummyRocket(Vector3 pos, Quaternion rot, string shooterInd)
+    {
+        //send message to players to make a rocket and shit
+        RpcSpawnDummyRocket(pos, rot, shooterInd);
+    }
+
+    [ClientRpc]
+    void RpcSpawnDummyRocket(Vector3 pos, Quaternion rot, string shooterInd)
+    {
+        //this dummy rocket will have no hit detection
+        //it is to show the other players where the owner's rocket is
+        //as such, it shouldn't be called on the owner
+
+        
+
+        if (theNetworkID == shooterInd) {
+            return;
+        }
+        
+
+        GameObject rocket = GameObject.Instantiate(rocketPrefab,
+                               pos,
+                               rot) as GameObject;
+
+        //set the rocket to dummy mode
+        Rocket rocketScript = rocket.GetComponent<Rocket>();
+        rocketScript.dummy = true;
     }
 
     //[Command]
