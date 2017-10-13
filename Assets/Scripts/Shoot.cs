@@ -71,7 +71,7 @@ public class Shoot : NetworkBehaviour {
         nextFire = 0;
         kickbackAcc = 0;
 
-        theNetworkID = gameObject.GetComponent<NetworkViewID>().ToString();
+        theNetworkID = Network.player.ToString();
     }
 
     // Update is called once per frame
@@ -229,6 +229,7 @@ public class Shoot : NetworkBehaviour {
         NetworkServer.Spawn(rocket);
 
     }
+
 
     [Command]
     void CmdHitscan(Vector3 pos, Vector3 dir)

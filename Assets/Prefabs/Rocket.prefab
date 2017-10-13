@@ -1423,6 +1423,7 @@ MonoBehaviour:
   lifetime: 10
   damage: 25
   owner: {fileID: 0}
+  dummy: 0
 --- !u!114 &114640999476919720
 MonoBehaviour:
   m_ObjectHideFlags: 1

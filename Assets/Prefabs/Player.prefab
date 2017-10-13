@@ -50,7 +50,7 @@ GameObject:
   - component: {fileID: 114978071995963706}
   m_Layer: 9
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -980,6 +980,7 @@ MonoBehaviour:
   clips:
   - {fileID: 8300000, guid: cb59d9886d2beec40907fdcafbe26e74, type: 3}
   - {fileID: 8300000, guid: 7cef239a907995b4db2ea5087634beb3, type: 3}
+  theNetworkID: 
 --- !u!114 &114332471194875598
 MonoBehaviour:
   m_ObjectHideFlags: 1

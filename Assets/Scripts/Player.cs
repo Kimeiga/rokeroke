@@ -30,10 +30,19 @@ public class Player : NetworkBehaviour {
     public int kills = 1;
     private const int startingKills = 0;
 
+    //[SyncVar(hook = "OnChangeID")]
+    public int myID;
+    //
+    
+
     void Start () {
-        
+
+
+        myID = (int)GetComponent<NetworkIdentity>().netId.Value;
+
         if (isLocalPlayer)
         {
+
             PlayerCanvas.canvas.EnableCanvas();
             Camera.main.gameObject.SetActive(false);
             
@@ -141,4 +150,35 @@ public class Player : NetworkBehaviour {
             PlayerCanvas.canvas.SetKills(kills);
         }
     }
+
+    void OnChangeID(int newID)
+    {
+        myID = newID;
+    }
+
+
+    [Command]
+    public void CmdDoleDamage(int victimID, float damage, int attackerID)
+    {
+        GameObject[] Players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject obj in Players)
+        {
+            if (obj.GetComponent<Player>().myID == victimID)
+            {
+
+
+                foreach(GameObject obj2 in Players)
+                {
+                    if(obj2.GetComponent<Player>().myID == attackerID)
+                    {
+                        Player owner = obj2.GetComponent<Player>();
+
+                        obj2.GetComponent<Player>().TakeDamage(damage, owner);
+                    }
+                }
+
+            }
+        }
+    }
+    
 }

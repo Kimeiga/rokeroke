@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-
+using System.Linq;
 
 public class Rocket : NetworkBehaviour {
 
@@ -50,21 +50,42 @@ public class Rocket : NetworkBehaviour {
                     {
                         return;
                     }
-
-
-
+                    
                     hitPlayer = true;
-                    victimPlayer.TakeDamage(damage, owner);
+                    
+                    int victimID = victimPlayer.myID;
+
+                    owner.CmdDoleDamage(victimID, damage, owner.myID);
+
+                    CmdTakeDamage(victimID);
                 }
             }
-            
+            //
             CmdExplode(hitPlayer);
 
         }
 
 	}
     
-    
+    [Command]
+    void CmdTakeDamage(int victimID)
+    {
+        GameObject[] Players = GameObject.FindGameObjectsWithTag("Player");
+        foreach (GameObject obj in Players)
+         {
+            if (obj.GetComponent<Player>().myID == victimID)
+            {
+             
+                obj.GetComponent<Player>().TakeDamage(damage, owner);
+            }
+         }
+
+
+
+        //var victimPlayer = GameManager.gameManager.playerDictionary.FirstOrDefault(x => x.Value == victimID).Key;
+
+        //victimPlayer.TakeDamage(damage, owner);
+    }
 
     IEnumerator WaitAndDestroy()
     {
