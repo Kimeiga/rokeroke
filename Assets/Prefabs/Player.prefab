@@ -783,7 +783,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 2
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -971,6 +971,7 @@ MonoBehaviour:
   kickTween: 0.5
   head: {fileID: 135753592673499158}
   eye: {fileID: 136860676669232502}
+  Ammo: 200
   range: 5000
   headMask:
     serializedVersion: 2
@@ -1184,6 +1185,7 @@ MonoBehaviour:
   explosion: {fileID: 1577748191097792, guid: b25bc316e69a6894cacc8c5424373ee3, type: 2}
   playerName: MIO
   kills: 0
+  myID: 0
 --- !u!114 &114584513417857848
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -23,13 +23,14 @@ public class Wind : NetworkBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        float volume = Mathf.Clamp(rigid.velocity.magnitude / 100, 0, 1f);
-        volume *= curve.Evaluate(volume);
-        audio.volume = volume;
+        
+            float volume = Mathf.Clamp(rigid.velocity.magnitude / 100, 0, 1f);
+            volume *= curve.Evaluate(volume);
+            audio.volume = volume;
+
 
         if (player.isLocalPlayer)
         {
-
             PlayerCanvas.canvas.SetSpeed(rigid.velocity.magnitude);
         }
     }

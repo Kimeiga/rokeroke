@@ -139,6 +139,8 @@ public class Player : NetworkBehaviour {
         {
             health = newHealth;
             PlayerCanvas.canvas.SetHealth(newHealth);
+
+            print("S");
         }
     }
 
@@ -173,7 +175,7 @@ public class Player : NetworkBehaviour {
                     {
                         Player owner = obj2.GetComponent<Player>();
 
-                        obj2.GetComponent<Player>().TakeDamage(damage, owner);
+                        obj.GetComponent<Player>().TakeDamage(damage, owner);
                     }
                 }
 
@@ -181,4 +183,14 @@ public class Player : NetworkBehaviour {
         }
     }
     
+
+    [Command]
+    public void CmdGetBullet(GameObject bullet, int bonus)
+    {
+        shoot.Ammo += bonus;
+        
+
+        AudioSource.PlayClipAtPoint(bullet.GetComponent<AudioSource>().clip, bullet.transform.position);
+        Destroy(bullet);
+    }
 }

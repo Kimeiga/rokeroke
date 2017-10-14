@@ -23,26 +23,31 @@ public class Bullet : NetworkBehaviour {
 
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
-        {
-            Shoot shootScript = other.gameObject.GetComponent<Shoot>();
-            shootScript.Ammo += ammoBonus;
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if(other.gameObject.layer == LayerMask.NameToLayer("Player"))
+    //    {
+    //        Shoot shootScript = other.gameObject.GetComponent<Shoot>();
+    //        shootScript.Ammo += ammoBonus;
 
-            CmdDestroy();
-        }
+    //        CmdDestroy();
+    //    }
 
-    }
+    //}
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            Shoot shootScript = collision.gameObject.GetComponent<Shoot>();
-            shootScript.Ammo += ammoBonus;
+            //Shoot shootScript = collision.gameObject.GetComponent<Shoot>();
+            //shootScript.Ammo += ammoBonus;
 
-            CmdDestroy();
+            //CmdDestroy();
+
+            Player player = collision.gameObject.GetComponent<Player>();
+            player.CmdGetBullet(gameObject,ammoBonus);
+
+            print("D");
         }
     }
 

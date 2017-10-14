@@ -9,7 +9,7 @@ public class Shoot : NetworkBehaviour {
     public GameObject rocketPrefab;
     public Transform fireTrans;
     public int maxAmmo = 10;
-    private int ammo;
+    //private int ammo;
     public float fireDelay = 0.5f;
     private float nextFire;
 
@@ -30,20 +30,8 @@ public class Shoot : NetworkBehaviour {
     public Collider head;
     public Collider eye;
 
-    public int Ammo
-    {
-        get
-        {
-            return ammo;
-        }
-
-        set
-        {
-            ammo = value;
-
-            PlayerCanvas.canvas.SetAmmo(Ammo);
-        }
-    }
+    [SyncVar(hook="OnChangeAmmo")]
+    public int Ammo;
 
     private RaycastHit hit;
     public float range = 5000;
@@ -70,6 +58,8 @@ public class Shoot : NetworkBehaviour {
         Ammo = maxAmmo;
         nextFire = 0;
         kickbackAcc = 0;
+
+        OnChangeAmmo(maxAmmo);
 
         theNetworkID = Network.player.ToString();
     }
@@ -100,6 +90,8 @@ public class Shoot : NetworkBehaviour {
 
             Ammo--;
 
+            PlayerCanvas.canvas.SetAmmo(Ammo);
+
             nextFire = Time.time + fireDelay;
         }
 
@@ -120,6 +112,8 @@ public class Shoot : NetworkBehaviour {
             kickbackAcc -= kickback * 2;
 
             Ammo -= 10;
+
+            PlayerCanvas.canvas.SetAmmo(Ammo);
 
             nextFire = Time.time + fireDelay * 2;
         }
@@ -275,6 +269,17 @@ public class Shoot : NetworkBehaviour {
     void RpcSound(int ind)
     {
         audio.PlayOneShot(clips[ind], 1);
+    }
+
+    void OnChangeAmmo(int newAmmo)
+    {
+        if (isLocalPlayer)
+        {
+
+            PlayerCanvas.canvas.SetAmmo(newAmmo);
+            Ammo = newAmmo;
+
+        }
     }
 
 }
